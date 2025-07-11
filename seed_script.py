@@ -34,7 +34,8 @@ def generate_random_document(fake):
 def seed_database(client, db_name, collection_name, num_records, ttl):
     db = client[db_name]
     collection = db[collection_name]
-    collection.create_index("registered_at", expireAfterSeconds=ttl)  # 1 year
+    if ttl:
+        collection.create_index("registered_at", expireAfterSeconds=ttl)
 
     fake = Faker()
 
@@ -59,4 +60,6 @@ if __name__ == "__main__":
     client = wait_for_mongodb(mongo_uri)
 
     # Seed the database
-    seed_database(client, args.db_name, args.collection_name, args.num_records, args.ttl)
+    ttl = int(os.environ.get("SEEDER_COLLECTIONS_TTL_SEC", args.ttl))
+    num_records = int(os.environ.get("SEEDER_COLLECTIONS_NUM_RECORDS", args.num_records))
+    seed_database(client, args.db_name, args.collection_name, num_records, ttl)
