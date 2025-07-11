@@ -5,35 +5,28 @@ services:
       - "27017:27017"
     # volumes:
     #   - ./mongo-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    env_file:
+      - global.env
+      - mongodb.env
 
   data-seeder:
     image: saichovsky/mongo-data-seeder:latest
     build: .
     depends_on:
       - mongodb
-    environment:
-      MONGODB_DEFAULT_HOST: mongodb://root:example@mongodb:27017
-    command:
-      [
-        "python",
-        "seed_script.py",
-        "--num-records",
-        "100000",
-        "--db-name",
-        "testdb",
-        "--collection-name",
-        "data",
-      ]
+    env_file:
+      - global.env
+      - data-seeder.env
+
+    command: ["python", "seed_script.py", "--db-name", "testdb"]
 
   mongo-express:
     image: mongo-express:latest
     ports:
       - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_URL=mongodb://root:example@mongodb:27017
+    env_file:
+      - global.env
+      - data-seeder.env
     depends_on:
       - mongodb
       - data-seeder
