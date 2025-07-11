@@ -11,4 +11,4 @@ db.your_collection.createIndex(
 )
 ```
 
-seed_script.py#L37 does this same thing for new data so that it has a TTL by default.
+[seed_script.py#L37](https://github.com/Saichovsky/mongodb_index_test/blob/d07be6830d73fc762897997635b95ef95752cb5a/seed_script.py#L37) does this same thing for new data so that it has a TTL by default.
